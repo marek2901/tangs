@@ -8,6 +8,12 @@ splash_state.prototype = {
     },
     create: function () {
         var logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'splash');
+        logo.width = this.game.width
+        logo.height = this.game.height
         logo.anchor.setTo(0.5, 0.5);
+        setTimeout(this.goToMenu.bind(this), 3000);
+    },
+    goToMenu: function () {
+        this.game.state.start('MenuState')
     }
 }
