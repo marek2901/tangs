@@ -1,5 +1,4 @@
 # SUPER Tanks Game
-------------------------
 
 ## Side project done for fun.
 
