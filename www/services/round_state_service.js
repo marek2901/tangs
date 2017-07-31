@@ -34,6 +34,12 @@ RoundStateService.prototype = {
         } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
             this.player.move(0, 4);
         }
+
+        // TEST ONLY REMOVE IT LATER
+        this.player.pointCanon(
+            TanksUtil.porcentX.call(this, 95),
+            this.game.world.centerY
+        );
     },
     _end_round: function () {
         // TODO end roudn and go to next if all enemies are dead or go to game over if player is dead

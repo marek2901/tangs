@@ -26,7 +26,10 @@ Player.prototype = {
         this.cannon.angle = this.baseAngle;
     },
     pointCanon: function (targetX, targetY) {
-        // TODO point cannon to target
+        var angleDeg = Math.atan2(
+            targetY - this.cannon.y, targetX - this.cannon.x
+        ) * 180 / Math.PI;
+        this.cannon.angle = this.baseAngle + angleDeg;
     },
     move: function (deltaX, deltaY) {
         this.tank.x += deltaX
