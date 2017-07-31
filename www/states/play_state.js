@@ -4,9 +4,15 @@ var play_state = function (game) {
 
 play_state.prototype = {
     preload: function () {
-        // todo plreload game assets
+        this.round_service = new RoundStateService(this.game)
+        this.game.load.image('background', 'images/backgrounds/bg_1.png');
     },
     create: function () {
-        //TODO
+        this.game.add.tileSprite(
+            0, 0,
+            this.game.world.width, this.game.world.height,
+            'background'
+        );
+        this.round_service.spawn_objects()
     }
 }
