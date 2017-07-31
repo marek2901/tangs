@@ -22,6 +22,19 @@ RoundStateService.prototype = {
     got_shot: function (player) {
         // TODO decrease player life and run game finished check
     },
+    update: function () {
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+            this.player.move(-4, 0);
+        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            this.player.move(4, 0);
+        }
+
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+            this.player.move(0, -4);
+        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+            this.player.move(0, 4);
+        }
+    },
     _end_round: function () {
         // TODO end roudn and go to next if all enemies are dead or go to game over if player is dead
         // if no next state available end game as a winner

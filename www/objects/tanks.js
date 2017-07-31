@@ -28,6 +28,13 @@ Player.prototype = {
     pointCanon: function (targetX, targetY) {
         // TODO point cannon to target
     },
+    move: function (deltaX, deltaY) {
+        this.tank.x += deltaX
+        this.cannon.x += deltaX
+
+        this.tank.y += deltaY
+        this.cannon.y += deltaY
+    },
     shoot: function () {
         // TODO shoot target
     }

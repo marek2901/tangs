@@ -14,5 +14,8 @@ play_state.prototype = {
             'background'
         );
         this.round_service.spawn_objects()
+    },
+    update: function () {
+        this.round_service.update();
     }
 }
