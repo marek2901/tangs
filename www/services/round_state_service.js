@@ -5,9 +5,9 @@ var RoundStateService = function (game) {
 
     this.player = new Player(this.game);
 
-    this.enemyies = [];
+    this.enemies = [];
     for (var index = 0; index < 3; index++) {
-        this.enemyies[index] = new Enemy(this.game);
+        this.enemies[index] = new Enemy(this.game);
     }
 }
 
@@ -18,7 +18,7 @@ RoundStateService.prototype = {
             this.game.world.centerY
         );
         var perc = 40;
-        this.enemyies.forEach(function (enemy) {
+        this.enemies.forEach(function (enemy) {
             enemy.spawn(
                 TanksUtil.porcentX.call(this, 95),
                 TanksUtil.porcentY.call(this, perc)
@@ -49,7 +49,7 @@ RoundStateService.prototype = {
         );
 
         this.player.shoot();
-        this.enemyies.forEach(function(enemy) {
+        this.enemies.forEach(function(enemy) {
             enemy.pointCanon(
                 this.player.tank.x,
                 this.player.tank.y
