@@ -4,7 +4,7 @@ var Player = function (game, onDead) {
 
     this.baseAngle = 90;
     this.nextFire = 0;
-    this.fireRate = 100;
+    this.fireRate = 500;
     this.basePercAccess = 0;
 
     this.pointx = TanksUtil.porcentX.call(this, 100);
@@ -122,7 +122,7 @@ var Enemy = function (game, onDead) {
 
     this.baseAngle = 270;
     this.nextFire = 0;
-    this.fireRate = 100;
+    this.fireRate = 500;
     this.basePercAccess = 50;
 
     this.pointx = 0;
