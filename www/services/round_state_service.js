@@ -26,9 +26,6 @@ RoundStateService.prototype = {
             perc += 20;
         }, this);
     },
-    got_shot: function (player) {
-        // TODO decrease player life and run game finished check
-    },
     update: function () {
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             this.player.move(-4, 0);
@@ -42,19 +39,14 @@ RoundStateService.prototype = {
             this.player.move(0, 4);
         }
 
-        // TEST ONLY REMOVE IT LATER
-        this.player.pointCanon(
-            TanksUtil.porcentX.call(this, 95),
-            this.game.world.centerY
-        );
-
-        this.player.shoot();
-        this.enemies.forEach(function(enemy) {
-            enemy.pointCanon(
-                this.player.tank.x,
-                this.player.tank.y
-            );
-            enemy.shoot();
+        var _this = this;
+        this.enemies.forEach(function (enemy) {
+            this.game.physics.arcade.overlap(this.player.tank, enemy.bullets, function (tank, bullets) {
+                _this.player.gotShot();
+            });
+            this.game.physics.arcade.overlap(this.player.bullets, enemy.tank, function (tank, bullets) {
+                enemy.gotShot();
+            });
         }, this);
     },
     _end_round: function () {

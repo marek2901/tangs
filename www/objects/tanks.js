@@ -28,7 +28,6 @@ Player.prototype = {
             this.game, posX, poxY, this.tank_name
         );
         this.tank.angle = this.baseAngle;
-        this.tank.enableBody = true;
         this.game.physics.enable(this.tank, Phaser.Physics.ARCADE);
 
         this.bullets = this.game.add.group();
