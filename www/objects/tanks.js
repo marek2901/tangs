@@ -87,6 +87,7 @@ Player.prototype = {
             this.tank.y += deltaY;
             this.cannon.y += deltaY;
             this.pointy += deltaY;
+            this.pointx += deltaX;
             this.myHealthBar.setPosition(this.tank.x, this.tank.y - 50);
         }
     },
