@@ -1,5 +1,6 @@
-var Player = function (game) {
+var Player = function (game, onDead) {
     this.game = game;
+    this.onDeadCallback = onDead;
 
     this.baseAngle = 90;
     this.nextFire = 0;
@@ -43,6 +44,28 @@ Player.prototype = {
         );
         this.cannon.anchor.setTo(0.5, 0.6);
         this.cannon.angle = this.baseAngle;
+        this.resetStats();
+        this.createHealthBar(posX, poxY);
+    },
+    createHealthBar: function (posx, posy) {
+        var options = {
+            width: 100,
+            height: 10,
+            x: posx,
+            y: posy - 50,
+            bg: {
+                color: '#651828'
+            },
+            bar: {
+                color: '#00FF00'
+            },
+            animationDuration: 200,
+            flipped: false
+        };
+        this.myHealthBar = new HealthBar(this.game, options);
+    },
+    resetStats: function () {
+        this.life = 100;
     },
     pointCanon: function (targetX, targetY) {
         var angleDeg = Math.atan2(
@@ -63,6 +86,7 @@ Player.prototype = {
 
             this.tank.y += deltaY
             this.cannon.y += deltaY
+            this.myHealthBar.setPosition(this.tank.x, this.tank.y - 50);
         }
     },
     shoot: function () {
@@ -78,12 +102,22 @@ Player.prototype = {
         }
     },
     gotShot: function () {
-        console.log('got shot :( :(')
+        this.life -= 1;
+        console.log(this.life);
+        if (this.life <= 0) {
+            this.tank.destroy(true)
+            this.cannon.destroy(true)
+            this.onDeadCallback(this);
+            this.myHealthBar.kill();
+        } else {
+            this.myHealthBar.setPercent(this.life);
+        }
     }
 }
 
-var Enemy = function (game) {
+var Enemy = function (game, onDead) {
     this.game = game;
+    this.onDeadCallback = onDead;
 
     this.baseAngle = 270;
     this.nextFire = 0;

@@ -3,11 +3,21 @@ var RoundStateService = function (game) {
     this.game = game;
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    this.player = new Player(this.game);
+    this.player = new Player(this.game, function () {
+        alert('Game Over');
+    });
 
     this.enemies = [];
+    var _this = this;
     for (var index = 0; index < 3; index++) {
-        this.enemies[index] = new Enemy(this.game);
+        this.enemies[index] = new Enemy(this.game, function (enemy) {
+            alert('Scored !!');
+            var index = _this.enemies.indexOf(enemy);
+
+            if (index > -1) {
+                _this.enemies.splice(index, 1);
+            }
+        });
     }
 }
 
@@ -27,27 +37,31 @@ RoundStateService.prototype = {
         }, this);
     },
     update: function () {
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            this.player.move(-4, 0);
-        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            this.player.move(4, 0);
-        }
+        try {
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                this.player.move(-4, 0);
+            } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                this.player.move(4, 0);
+            }
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-            this.player.move(0, -4);
-        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-            this.player.move(0, 4);
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                this.player.move(0, -4);
+            } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+                this.player.move(0, 4);
+            }
+            var _this = this;
+            this.enemies.forEach(function (enemy) {
+                this.game.physics.arcade.overlap(this.player.tank, enemy.bullets, function (tank, bullets) {
+                    _this.player.gotShot();
+                });
+                this.game.physics.arcade.overlap(this.player.bullets, enemy.tank, function (tank, bullets) {
+                    enemy.gotShot();
+                });
+            }, this);
+            this.player.shoot();
+        } catch (error) {
+            console.log(error);
         }
-
-        var _this = this;
-        this.enemies.forEach(function (enemy) {
-            this.game.physics.arcade.overlap(this.player.tank, enemy.bullets, function (tank, bullets) {
-                _this.player.gotShot();
-            });
-            this.game.physics.arcade.overlap(this.player.bullets, enemy.tank, function (tank, bullets) {
-                enemy.gotShot();
-            });
-        }, this);
     },
     _end_round: function () {
         // TODO end roudn and go to next if all enemies are dead or go to game over if player is dead
