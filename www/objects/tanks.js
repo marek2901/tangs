@@ -81,11 +81,12 @@ Player.prototype = {
             this.tank.y + deltaY < TanksUtil.porcentY.call(this, 100) &&
             this.tank.y + deltaY > TanksUtil.porcentY.call(this, 0)) {
 
-            this.tank.x += deltaX
-            this.cannon.x += deltaX
+            this.tank.x += deltaX;
+            this.cannon.x += deltaX;
 
-            this.tank.y += deltaY
-            this.cannon.y += deltaY
+            this.tank.y += deltaY;
+            this.cannon.y += deltaY;
+            this.pointy += deltaY;
             this.myHealthBar.setPosition(this.tank.x, this.tank.y - 50);
         }
     },
@@ -105,8 +106,8 @@ Player.prototype = {
         this.life -= 1;
         console.log(this.life);
         if (this.life <= 0) {
-            this.tank.destroy(true)
-            this.cannon.destroy(true)
+            this.tank.destroy(true);
+            this.cannon.destroy(true);
             this.onDeadCallback(this);
             this.myHealthBar.kill();
         } else {

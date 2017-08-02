@@ -4,18 +4,20 @@ var RoundStateService = function (game) {
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
     this.player = new Player(this.game, function () {
-        alert('Game Over');
-    });
+        this._end_round(false);
+    }.bind(this));
 
     this.enemies = [];
     var _this = this;
     for (var index = 0; index < 3; index++) {
         this.enemies[index] = new Enemy(this.game, function (enemy) {
-            alert('Scored !!');
             var index = _this.enemies.indexOf(enemy);
 
             if (index > -1) {
                 _this.enemies.splice(index, 1);
+            }
+            if (_this.enemies.length <= 0) {
+                _this._end_round(true);
             }
         });
     }
@@ -59,11 +61,15 @@ RoundStateService.prototype = {
                 });
             }, this);
             this.player.shoot();
+
+            if (this.game.input.mousePointer.isDown) {
+                this.player.pointCanon(this.game.input.mousePointer.x, this.game.input.mousePointer.y)
+            }
         } catch (error) {
             console.log(error);
         }
     },
-    _end_round: function () {
+    _end_round: function (winner) {
         // TODO end roudn and go to next if all enemies are dead or go to game over if player is dead
         // if no next state available end game as a winner
     }
