@@ -56,10 +56,17 @@ var StateServiceHelper = {
             );
             perc += 20;
         }, this);
+    },
+    createAI: function () {
+        this.aiControllers = [];
+        for (var index = 0; index < 3; index++) {
+            this.aiControllers[index] = new AIController();
+        }
     }
 }
 
 var RoundStateService = function (game) {
+    StateServiceHelper.createAI.call(this);
     this.levelHelper = new DifficultyHelper(0);
     this.game = game;
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -89,7 +96,19 @@ RoundStateService.prototype = {
                 this.player.move(0, 4);
             }
             var _this = this;
-            this.enemies.forEach(function (enemy) {
+            this.enemies.forEach(function (enemy, index) {
+                this.aiControllers[index].onUpdate({
+                    move: function (x, y) {
+                        enemy.move(x, y);
+                    },
+                    shoot: function () {
+                        enemy.shoot();
+                    },
+                    pointCanon: function (x, y) {
+                        // TODO
+                    }
+                });
+
                 this.game.physics.arcade.overlap(this.player.tank, enemy.bullets, function (tank, bullets) {
                     _this.player.gotShot(_this.baseShot + _this.levelHelper.getDiffucultyNumber());
                 });
