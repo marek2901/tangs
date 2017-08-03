@@ -1,30 +1,33 @@
-var RoundStateService = function (game) {
-    this.round_num = 1;
-    this.game = game;
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+var StateServiceHelper = {
+    clear: function () {
+        this.enemies.forEach(function (enemy) {
+            enemy.kill();
+        }.bind(this))
+        this.enemies = [];
+        this.player.kill();
+        this.player = null;
+    },
+    create: function (enemiesNum) {
+        this.player = new Player(this.game, function () {
+            this._end_round(false);
+        }.bind(this));
 
-    this.player = new Player(this.game, function () {
-        this._end_round(false);
-    }.bind(this));
+        this.enemies = [];
+        var _this = this;
+        for (var index = 0; index < enemiesNum; index++) {
+            this.enemies[index] = new Enemy(this.game, function (enemy) {
+                var index = _this.enemies.indexOf(enemy);
 
-    this.enemies = [];
-    var _this = this;
-    for (var index = 0; index < 3; index++) {
-        this.enemies[index] = new Enemy(this.game, function (enemy) {
-            var index = _this.enemies.indexOf(enemy);
-
-            if (index > -1) {
-                _this.enemies.splice(index, 1);
-            }
-            if (_this.enemies.length <= 0) {
-                _this._end_round(true);
-            }
-        });
-    }
-}
-
-RoundStateService.prototype = {
-    spawn_objects: function () {
+                if (index > -1) {
+                    _this.enemies.splice(index, 1);
+                }
+                if (_this.enemies.length <= 0) {
+                    _this._end_round(true);
+                }
+            });
+        }
+    },
+    spawn: function () {
         this.player.spawn(
             TanksUtil.porcentX.call(this, 5),
             this.game.world.centerY
@@ -37,8 +40,25 @@ RoundStateService.prototype = {
             );
             perc += 20;
         }, this);
+    }
+}
+
+var RoundStateService = function (game) {
+    this.round_num = 1;
+    this.game = game;
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    StateServiceHelper.create.call(this, 1);
+    this.pause = false;
+}
+
+RoundStateService.prototype = {
+    spawn_objects: function () {
+        StateServiceHelper.spawn.call(this)
     },
     update: function () {
+        if (this.pause) {
+            return null;
+        }
         try {
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 this.player.move(-4, 0);
@@ -70,7 +90,10 @@ RoundStateService.prototype = {
         }
     },
     _end_round: function (winner) {
-        // TODO end roudn and go to next if all enemies are dead or go to game over if player is dead
-        // if no next state available end game as a winner
+        this.pause = true;
+        StateServiceHelper.clear.call(this);
+        StateServiceHelper.create.call(this, 2);
+        StateServiceHelper.spawn.call(this);
+        this.pause = false;
     }
 }

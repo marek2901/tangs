@@ -11,5 +11,5 @@ document.addEventListener(startEvent, function () {
     game.state.add('MenuState', menu_state);
     game.state.add('ScoresState', scores_state);
     game.state.add('PlayState', play_state);
-    game.state.start('SplashState');
+    game.state.start('PlayState');
 });

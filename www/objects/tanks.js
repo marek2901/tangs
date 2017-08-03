@@ -4,7 +4,7 @@ var Player = function (game, onDead) {
 
     this.baseAngle = 90;
     this.nextFire = 0;
-    this.fireRate = 500;
+    this.fireRate = 100;
     this.basePercAccess = 0;
 
     this.pointx = TanksUtil.porcentX.call(this, 100);
@@ -107,13 +107,17 @@ Player.prototype = {
         this.life -= 1;
         console.log(this.life);
         if (this.life <= 0) {
-            this.tank.destroy(true);
-            this.cannon.destroy(true);
+            this.kill();
             this.onDeadCallback(this);
-            this.myHealthBar.kill();
         } else {
             this.myHealthBar.setPercent(this.life);
         }
+    },
+    kill: function () {
+        this.tank.destroy(true);
+        this.cannon.destroy(true);
+        this.myHealthBar.kill();
+        this.bullets.destroy();
     }
 }
 
