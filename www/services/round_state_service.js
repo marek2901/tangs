@@ -1,3 +1,19 @@
+var DifficultyHelper = function (baseNum) {
+    this.baseNum = baseNum;
+}
+
+DifficultyHelper.prototype = {
+    getNoOfEnemies: function () {
+        return (this.baseNum % 3) + 1;
+    },
+    getDiffucultyNumber: function () {
+        return (0.2 * parseInt(this.baseNum / 3))
+    },
+    levelUp: function () {
+        this.baseNum += 1;
+    }
+}
+
 var StateServiceHelper = {
     clear: function () {
         this.enemies.forEach(function (enemy) {
@@ -44,11 +60,12 @@ var StateServiceHelper = {
 }
 
 var RoundStateService = function (game) {
-    this.round_num = 1;
+    this.levelHelper = new DifficultyHelper(0);
     this.game = game;
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    StateServiceHelper.create.call(this, 1);
+    StateServiceHelper.create.call(this, this.levelHelper.getNoOfEnemies());
     this.pause = false;
+    this.baseShot = 5;
 }
 
 RoundStateService.prototype = {
@@ -74,13 +91,14 @@ RoundStateService.prototype = {
             var _this = this;
             this.enemies.forEach(function (enemy) {
                 this.game.physics.arcade.overlap(this.player.tank, enemy.bullets, function (tank, bullets) {
-                    _this.player.gotShot();
+                    _this.player.gotShot(_this.baseShot + _this.levelHelper.getDiffucultyNumber());
                 });
                 this.game.physics.arcade.overlap(this.player.bullets, enemy.tank, function (tank, bullets) {
-                    enemy.gotShot();
+                    enemy.gotShot(Math.max(0.1, (_this.baseShot - _this.levelHelper.getDiffucultyNumber())));
                 });
             }, this);
             this.player.shoot();
+            this.enemies[0].shoot();
 
             if (this.game.input.mousePointer.isDown) {
                 this.player.pointCanon(this.game.input.mousePointer.x, this.game.input.mousePointer.y)
@@ -92,8 +110,13 @@ RoundStateService.prototype = {
     _end_round: function (winner) {
         this.pause = true;
         StateServiceHelper.clear.call(this);
-        StateServiceHelper.create.call(this, 2);
-        StateServiceHelper.spawn.call(this);
-        this.pause = false;
+        if (winner) {
+            this.levelHelper.levelUp();
+            StateServiceHelper.create.call(this, this.levelHelper.getNoOfEnemies());
+            StateServiceHelper.spawn.call(this);
+            this.pause = false;
+        } else {
+            alert('You lost !!!!');
+        }
     }
 }

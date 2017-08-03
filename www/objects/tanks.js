@@ -4,7 +4,7 @@ var Player = function (game, onDead) {
 
     this.baseAngle = 90;
     this.nextFire = 0;
-    this.fireRate = 100;
+    this.fireRate = 500;
     this.basePercAccess = 0;
 
     this.pointx = TanksUtil.porcentX.call(this, 100);
@@ -103,8 +103,8 @@ Player.prototype = {
                 bullet, this.pointx, this.pointy, 300);
         }
     },
-    gotShot: function () {
-        this.life -= 1;
+    gotShot: function (hits) {
+        this.life -= hits;
         console.log(this.life);
         if (this.life <= 0) {
             this.kill();
