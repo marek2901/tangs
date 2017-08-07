@@ -105,7 +105,6 @@ Player.prototype = {
     },
     gotShot: function (hits) {
         this.life -= hits;
-        console.log(this.life);
         if (this.life <= 0) {
             this.kill();
             this.onDeadCallback(this);

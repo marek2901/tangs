@@ -62,6 +62,14 @@ var StateServiceHelper = {
         for (var index = 0; index < 3; index++) {
             this.aiControllers[index] = new AIController();
         }
+    },
+    createJoyStick: function () {
+        this.game.load.atlas('generic', 'images/generic-joystick.png', 'images/generic-joystick.json');
+    },
+    spawnJoyStick: function () {
+        this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
+        this.stick = this.pad.addStick(0, 0, 200, 'generic');
+        this.stick.alignBottomLeft(20);
     }
 }
 
@@ -73,13 +81,19 @@ var RoundStateService = function (game) {
     StateServiceHelper.create.call(this, this.levelHelper.getNoOfEnemies());
     this.pause = false;
     this.baseShot = 5;
+    StateServiceHelper.createJoyStick.call(this);
 }
 
 RoundStateService.prototype = {
     spawn_objects: function () {
+        StateServiceHelper.spawnJoyStick.call(this)
         StateServiceHelper.spawn.call(this)
     },
     update: function () {
+        // if (this.stick.isDown){
+        //     console.log("rotation: " + this.stick.rotation + " force : " + this.stick.force)
+        //     this.stick.rotation // 0 -3
+        // } :joy: figure later xDDD
         if (this.pause) {
             return null;
         }
