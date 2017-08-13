@@ -71,6 +71,8 @@ var StateServiceHelper = {
         this.stick = this.pad.addStick(0, 0, 150, 'generic');
         this.stick.alignBottomLeft(20);
         this.joyAdapter = new JoyStickAdapter(this.stick);
+
+        this.buttonShoot = this.pad.addButton(100, 100, 'generic', 'button1-up', 'button1-down');
     }
 }
 
@@ -154,7 +156,8 @@ RoundStateService.prototype = {
                     enemy.gotShot(Math.max(0.1, (_this.baseShot - _this.levelHelper.getDiffucultyNumber())));
                 });
             }, this);
-            this.player.shoot();
+            if(this.buttonShoot.isDown)
+                this.player.shoot();
             this.enemies[0].shoot();
 
             if (this.game.input.mousePointer.isDown) {
