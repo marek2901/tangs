@@ -9,7 +9,7 @@ document.addEventListener(startEvent, function () {
 
     game.state.add('SplashState', splash_state);
     game.state.add('MenuState', menu_state);
-    game.state.add('ScoresState', scores_state);
+    game.state.add('PlayOverState', play_over_state);
     game.state.add('PlayState', play_state);
     game.state.start('SplashState');
 });

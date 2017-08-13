@@ -73,6 +73,9 @@ var StateServiceHelper = {
         this.joyAdapter = new JoyStickAdapter(this.stick);
 
         this.buttonShoot = this.pad.addButton(100, 100, 'generic', 'button1-up', 'button1-down');
+    },
+    clearControls: function () {
+        this.pad.destroy()
     }
 }
 
@@ -176,7 +179,8 @@ RoundStateService.prototype = {
             StateServiceHelper.spawn.call(this);
             this.pause = false;
         } else {
-            alert('You lost !!!!');
+            StateServiceHelper.clearControls.call(this)
+            this.game.state.start('PlayOverState')
         }
     }
 }
