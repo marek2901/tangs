@@ -68,10 +68,46 @@ var StateServiceHelper = {
     },
     spawnJoyStick: function () {
         this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
-        this.stick = this.pad.addStick(0, 0, 200, 'generic');
+        this.stick = this.pad.addStick(0, 0, 150, 'generic');
         this.stick.alignBottomLeft(20);
+        this.joyAdapter = new JoyStickAdapter(this.stick);
     }
 }
+
+var JoyStickAdapter = function (stick) {
+    this.stick = stick;
+}
+
+JoyStickAdapter.prototype = {
+    getJoyInput: function (callback) {
+
+        if (this.stick.isDown) {
+            // 3 or -3 is left
+            left = this._distance(this.stick.rotation, 3)
+            // 0 is right
+            right = this._distance(this.stick.rotation, 0)
+            // -1.5 is up
+            up = this._distance(this.stick.rotation, 1.5)
+            // 1.5 is down
+            down = this._distance(this.stick.rotation, 1.5)
+
+            x = Math.max(left, right) * 4
+            if (Math.abs(this.stick.rotation) > 1.5) {
+                x *= -1
+            }
+            y = Math.max(up, down) * 4
+            if (this.stick.rotation < 0) {
+                y *= -1
+            }
+
+            callback(x, y)
+        }
+    },
+    _distance: function (n1, n2) {
+        return Math.max(3, 4 - Math.min(4, Math.abs(Math.abs(n1) - Math.abs(n2)).toFixed(2)).toFixed(2)) - 3
+    }
+}
+
 
 var RoundStateService = function (game) {
     StateServiceHelper.createAI.call(this);
@@ -90,25 +126,13 @@ RoundStateService.prototype = {
         StateServiceHelper.spawn.call(this)
     },
     update: function () {
-        // if (this.stick.isDown){
-        //     console.log("rotation: " + this.stick.rotation + " force : " + this.stick.force)
-        //     this.stick.rotation // 0 -3
-        // } :joy: figure later xDDD
         if (this.pause) {
             return null;
         }
         try {
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-                this.player.move(-4, 0);
-            } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-                this.player.move(4, 0);
-            }
-
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                this.player.move(0, -4);
-            } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-                this.player.move(0, 4);
-            }
+            this.joyAdapter.getJoyInput(function (x, y) {
+                this.player.move(x, y);
+            }.bind(this))
             var _this = this;
             this.enemies.forEach(function (enemy, index) {
                 this.aiControllers[index].onUpdate({

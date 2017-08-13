@@ -68,12 +68,15 @@ Player.prototype = {
         this.life = 100;
     },
     pointCanon: function (targetX, targetY) {
-        var angleDeg = Math.atan2(
-            targetY - this.cannon.y, targetX - this.cannon.x
-        ) * 180 / Math.PI;
-        this.cannon.angle = 90 + angleDeg;
-        this.pointx = targetX;
-        this.pointy = targetY;
+        if (targetX < TanksUtil.porcentX.call(this, this.basePercAccess + 0) ||
+            targetX > TanksUtil.porcentX.call(this, this.basePercAccess + 50)) {
+            var angleDeg = Math.atan2(
+                targetY - this.cannon.y, targetX - this.cannon.x
+            ) * 180 / Math.PI;
+            this.cannon.angle = 90 + angleDeg;
+            this.pointx = targetX;
+            this.pointy = targetY;
+        }
     },
     move: function (deltaX, deltaY) {
         if (this.tank.x + deltaX > TanksUtil.porcentX.call(this, this.basePercAccess + 0) &&
