@@ -69,10 +69,15 @@ var StateServiceHelper = {
     spawnJoyStick: function () {
         this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
         this.stick = this.pad.addStick(0, 0, 150, 'generic');
-        this.stick.alignBottomLeft(20);
+        this.stick.alignBottomLeft(0);
+        this.stick.scale = TanksUtil.getScale.call(this)
         this.joyAdapter = new JoyStickAdapter(this.stick);
 
-        this.buttonShoot = this.pad.addButton(100, 100, 'generic', 'button1-up', 'button1-down');
+        this.buttonShoot = this.pad.addButton(
+            TanksUtil.porcentX.call(this, 5),
+            TanksUtil.porcentY.call(this, 10),
+            'generic', 'button1-up', 'button1-down');
+        this.buttonShoot.scale = TanksUtil.getScale.call(this)
     },
     clearControls: function () {
         this.pad.destroy()
@@ -109,7 +114,10 @@ JoyStickAdapter.prototype = {
         }
     },
     _distance: function (n1, n2) {
-        return Math.max(3, 4 - Math.min(4, Math.abs(Math.abs(n1) - Math.abs(n2)).toFixed(2)).toFixed(2)) - 3
+        return Math.max(
+            3,
+            4 - Math.min(4, Math.abs(Math.abs(n1) - Math.abs(n2)).toFixed(2)).toFixed(2)
+        ) - 3
     }
 }
 
@@ -159,7 +167,7 @@ RoundStateService.prototype = {
                     enemy.gotShot(Math.max(0.1, (_this.baseShot - _this.levelHelper.getDiffucultyNumber())));
                 });
             }, this);
-            if(this.buttonShoot.isDown)
+            if (this.buttonShoot.isDown)
                 this.player.shoot();
             this.enemies[0].shoot();
 

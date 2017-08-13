@@ -9,5 +9,8 @@ var TanksUtil = {
     },
     porcentY: function (percent) {
         return this.game.world.height * (percent / 100)
+    },
+    getScale: function () {
+        return window.innerHeight/687
     }
 }
